@@ -87,6 +87,7 @@ func query(ctx context.Context, w io.Writer, client *spanner.Client) error {
 			return err
 		}
 		fmt.Fprintf(w, "%d %d %s\n", singerID, albumID, albumTitle)
+	}
 }
 
 func createDatabase(ctx context.Context, w io.Writer, adminClient *database.DatabaseAdminClient, db string) error {
