@@ -6,4 +6,4 @@ steps:
       - -c
       - |
         go install github.com/GoogleCloudPlatform/golang-samples/spanner/...
-        go run main.go dmlwrite projects/$PROJECT_ID/instances/test-instance/databases/example-db2
+        go run main.go write projects/$PROJECT_ID/instances/test-instance/databases/example-db2

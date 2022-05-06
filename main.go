@@ -23,7 +23,7 @@ type adminCommand func(ctx context.Context, w io.Writer, adminClient *database.D
 
 var (
 	commands = map[string]command{
-		// "write":               write,
+		"write":               write,
 		// "read":                read,
 		// "query":               query,
 		// "update":              update,
@@ -49,6 +49,26 @@ var (
 		// "pgcreatedatabase":  pgCreateDatabase,
 	}
 )
+
+func write(ctx context.Context, w io.writer, client *spanner.Client) error {
+	singerColumns := []string{"singerId", "FirstName", "LastName"}
+	albumColumns := []string{"SingerId", "AlbumId", "AlbumTitle"}
+	m := []*spanner.Mutation{
+		spanner.InsertOrUpdate("Singers", singerColumns, []interface{}{1, "Marc", "Richards"}),
+		spanner.InsertOrUpdate("Singers", singerColumns, []interface{}{2, "Catalina", "Smith"}),
+		spanner.InsertOrUpdate("Singers", singerColumns, []interface{}{3, "Alice", "Trentor"}),
+		spanner.InsertOrUpdate("Singers", singerColumns, []interface{}{4, "Lea", "Martin"}),
+		spanner.InsertOrUpdate("Singers", singerColumns, []interface{}{5, "David", "Lomond"}),
+		spanner.InsertOrUpdate("Albums", albumColumns, []interface{}{1, 1, "Total Junk"}),
+		spanner.InsertOrUpdate("Albums", albumColumns, []interface{}{1, 2, "Go, Go, Go"}),
+		spanner.InsertOrUpdate("Albums", albumColumns, []interface{}{2, 1, "Green"}),
+		spanner.InsertOrUpdate("Albums", albumColumns, []interface{}{2, 2, "Forever Hold Your Peace"}),
+		spanner.InsertOrUpdate("Albums", albumColumns, []interface{}{2, 3, "Terrified"}),
+	}
+	_, err := client.Apply(ctx, m)
+	return err
+	}
+}
 
 func createDatabase(ctx context.Context, w io.Writer, adminClient *database.DatabaseAdminClient, db string) error {
 	matches := regexp.MustCompile("^(.*)/databases/(.*)$").FindStringSubmatch(db)
