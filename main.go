@@ -25,7 +25,7 @@ var (
 	commands = map[string]command{
 		"write":               write,
 		// "read":                read,
-		// "query":               query,
+		"query":               query,
 		// "update":              update,
 		// "querynewcolumn":      queryNewColumn,
 		// "pgquerynewcolumn":    pgQueryNewColumn,
