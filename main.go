@@ -31,7 +31,7 @@ var (
 		// "pgquerynewcolumn":    pgQueryNewColumn,
 		// "querywithparameter":  queryWithParameter,
 		// "pgqueryparameter":    pgQueryParameter,
-		// "dmlwrite":            writeUsingDML,
+		"dmlwrite":            writeUsingDML,
 		// "pgdmlwrite":          pgWriteUsingDML,
 		// "dmlwritetxn":         writeWithTransactionUsingDML,
 		// "pgdmlwritetxn":       pgWriteWithTransactionUsingDML,
@@ -81,6 +81,33 @@ func createDatabase(ctx context.Context, w io.Writer, adminClient *database.Data
 	}
 	fmt.Fprintf(w, "Created database [%s]\n", db)
 	return nil
+}
+
+func writeUsingDML(w io.Writer, db string) error {
+	ctx := context.Background()
+	client, err = spanner.NewClient(ctx, db)
+	if err != nil {
+		return err 
+	}
+	defer client.Close()
+
+	_, err = client.ReadWriteTransaction(ctx, func(ctx context.Context, txn *spanner.ReadWriteTransaction) error {
+		stmt := spanner.Statement{
+			SQL: `INSERT Singers (SingerId, FirstName, LastName) VALUES
+                                (12, 'Melissa', 'Garcia'),
+                                (13, 'Russell', 'Morales'),
+                                (14, 'Jacqueline', 'Long'),
+                                (15, 'Dylan', 'Shaw')`,
+		}
+		rowConut, err := txn.Update(ctx, stmt)
+
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(w, "%d record(s) inserted.\n", rowCount)
+		return err
+	})
+	return err
 }
 
 func createClients(ctx context.Context, db string) (*database.DatabaseAdminClient, *spanner.Client) {
