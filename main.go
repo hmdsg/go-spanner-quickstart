@@ -83,14 +83,7 @@ func createDatabase(ctx context.Context, w io.Writer, adminClient *database.Data
 	return nil
 }
 
-func writeUsingDML(w io.Writer, db string) error {
-	ctx := context.Background()
-	client, err = spanner.NewClient(ctx, db)
-	if err != nil {
-		return err 
-	}
-	defer client.Close()
-
+func writeUsingDML(ctx context.Context, w io.Writer, client *spanner.Client) error {
 	_, err = client.ReadWriteTransaction(ctx, func(ctx context.Context, txn *spanner.ReadWriteTransaction) error {
 		stmt := spanner.Statement{
 			SQL: `INSERT Singers (SingerId, FirstName, LastName) VALUES
