@@ -67,7 +67,6 @@ func write(ctx context.Context, w io.writer, client *spanner.Client) error {
 	}
 	_, err := client.Apply(ctx, m)
 	return err
-	}
 }
 
 func createDatabase(ctx context.Context, w io.Writer, adminClient *database.DatabaseAdminClient, db string) error {
