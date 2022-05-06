@@ -69,6 +69,26 @@ func write(ctx context.Context, w io.Writer, client *spanner.Client) error {
 	return err
 }
 
+func query(ctx context.Context, w io.Writer, client *spanner.Client) error {
+	stmt := spanner.Statement{SQL: `SELECT SingerId, AlbumId, AlbumTitle FROM Albums`}
+	iter := client.Single().Query(ctx, stmt)
+	defer iter.Stop()
+	for {
+		row, err := iter.Next()
+		if err == iterator.Done{
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		var singerID, albumID int64
+		var albumTitle string
+		if err := row.Columns(&singerID, &albumID, &albumIDTitle); err != nil {
+			return err
+		}
+		fmt.Fprintf(w, "%d %d %s\n", singerID, albumID, albumTitle)
+}
+
 func createDatabase(ctx context.Context, w io.Writer, adminClient *database.DatabaseAdminClient, db string) error {
 	matches := regexp.MustCompile("^(.*)/databases/(.*)$").FindStringSubmatch(db)
 	if matches == nil || len(matches) != 3 {
