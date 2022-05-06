@@ -50,7 +50,7 @@ var (
 	}
 )
 
-func write(ctx context.Context, w io.writer, client *spanner.Client) error {
+func write(ctx context.Context, w io.Writer, client *spanner.Client) error {
 	singerColumns := []string{"singerId", "FirstName", "LastName"}
 	albumColumns := []string{"SingerId", "AlbumId", "AlbumTitle"}
 	m := []*spanner.Mutation{
