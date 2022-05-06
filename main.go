@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/spanner"
-	// "google.golang.org/api/iterator"
+	"google.golang.org/api/iterator"
 
 	database "cloud.google.com/go/spanner/admin/database/apiv1"
 	adminpb "google.golang.org/genproto/googleapis/spanner/admin/database/v1"
@@ -83,7 +83,7 @@ func query(ctx context.Context, w io.Writer, client *spanner.Client) error {
 		}
 		var singerID, albumID int64
 		var albumTitle string
-		if err := row.Columns(&singerID, &albumID, &albumIDTitle); err != nil {
+		if err := row.Columns(&singerID, &albumID, &albumTitle); err != nil {
 			return err
 		}
 		fmt.Fprintf(w, "%d %d %s\n", singerID, albumID, albumTitle)
