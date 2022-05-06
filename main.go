@@ -90,6 +90,33 @@ func query(ctx context.Context, w io.Writer, client *spanner.Client) error {
 	}
 }
 
+func queryWithParameter(ctx context.Context, w io.Writer, client *spanner.Client) error {
+	stmt := spanner.Statement{
+		SQL: `SELECT SingerId, FirstName, LastName FROM Singers
+				WHERE LastName = @lastName`,
+		Params: map[string]interdace{}{
+			"lastName": "Garcia",
+		},
+	}
+	iter := client.Single().Query(ctx, stmt)
+	defer iter.stop()
+	for {
+		row, err := iter.Next()
+		if err == iter.Done {
+			return nil
+		}
+		if err != nil{
+			return err
+		}
+		var singerID, int64
+		var firstName, lastName string
+		if err := row.Columns(&singerID, &firstName, &lastName); err != nil {
+			return err
+		}
+		fmt.Fprintf(w, "%d %s %s\n", singerID, firstName, lastName)
+	}
+}
+
 func createDatabase(ctx context.Context, w io.Writer, adminClient *database.DatabaseAdminClient, db string) error {
 	matches := regexp.MustCompile("^(.*)/databases/(.*)$").FindStringSubmatch(db)
 	if matches == nil || len(matches) != 3 {
