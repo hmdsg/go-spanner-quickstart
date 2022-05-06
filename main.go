@@ -99,7 +99,7 @@ func writeUsingDML(w io.Writer, db string) error {
                                 (14, 'Jacqueline', 'Long'),
                                 (15, 'Dylan', 'Shaw')`,
 		}
-		rowConut, err := txn.Update(ctx, stmt)
+		rowCount, err := txn.Update(ctx, stmt)
 
 		if err != nil {
 			return err
